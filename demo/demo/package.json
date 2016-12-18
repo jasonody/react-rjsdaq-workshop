@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "watch": "mkdir -p js && ./node_modules/jitter/bin/jitter coffee js -m",
+    "start": "npm run-script watch & open index.html"
+  },
+  "dependencies": {
+    "jitter": "*"
+  }
+}

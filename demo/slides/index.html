@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Building user interfaces with Facebook’s React – What’s the DIFF?</title>
+
+		<meta name="author" content="Steven Luscher">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/moon.css" id="theme">
+
+
+    <style type="text/css" media="screen">
+    /* If it's going to pop up, make it unobtrusive */
+    #remotes-widget {
+      bottom: 0 !important;
+      top: auto !important;
+    }
+    </style>
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h3>Building user interfaces with Facebook’s React</h3>
+          <p>What’s the <span style="color: #00DD00; font-size: 0.8em;">+DIFF?</span</p>
+          <p style="margin-top: 9em; margin-bottom: -9em; font-size: 0.6em; line-height: 40px">
+            by
+            <img style="vertical-align: text-bottom; margin: 0 0.3em 0 0.4em" src="images/sluscher_avatar.png" width="40" height="40">
+            <a href="https://github.com/steveluscher">@steveluscher</a>
+          </p>
+				</section>
+
+				<section>
+          <h2>DOM insertion is painful</h2>
+				</section>
+
+        <section>
+          <div class="before">
+            <h2>Before</h2>
+            <ul>
+              <li>Strawberry</li>
+            </ul>
+          </div><div class="after">
+            <h2>After</h2>
+            <ul>
+              <li>Strawberry</li>
+              <li>Banana</li>
+              <li>Orange</li>
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <div class="before">
+            <h2>Before</h2>
+            <ul>
+              <li>New York</li>
+            </ul>
+          </div><div class="after">
+            <h2>After</h2>
+            <ul>
+              <li>Los Angeles</li>
+              <li>Kansas City</li>
+            </ul>
+          </div>
+        </section>
+
+        <style type="text/css" media="screen">
+        .reveal .before, .reveal .after {
+          display: inline-block;
+          vertical-align: top;
+          width: 50%;
+          height: 325px;
+        }
+        .reveal .before ul, .reveal .after ul {
+          margin: 0; padding: 0; list-style: none;
+        }
+        .reveal .before ul li, .reveal .after ul li {
+          border: 4px solid rgba(0,0,0,0.4);
+
+          margin-bottom: 0.5em;
+          padding: 5px 10px;
+
+          background-image: -webkit-gradient(linear, left bottom, right top, color-stop(0, rgba(0,0,0,0)), color-stop(0.25, rgba(0,0,0,0)), color-stop(0.25, rgba(0,0,0,0.4)), color-stop(0.5, rgba(0,0,0,0.4)), color-stop(0.5, rgba(0,0,0,0)), color-stop(0.75, rgba(0,0,0,0)), color-stop(0.75, rgba(0,0,0,0.4)));
+        	background-image: -webkit-linear-gradient(left bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.4) 75%);
+        	background-image: -moz-linear-gradient(left bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.4) 75%);
+        	background-image: -ms-linear-gradient(left bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.4) 75%);
+        	background-image: -o-linear-gradient(left bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.4) 75%);
+        	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='rgba(0,0,0,0)ccc', endColorstr='rgba(0,0,0,0.4)bbb',GradientType=0 ); / IE6-8 */
+        	background-image: linear-gradient(left bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0.4) 25%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.4) 75%);
+        	background-size: 30px 30px;
+        }
+        </style>
+
+        <section data-background="images/hey_react.png" data-background-size="30%" data-background-position="5% 20%"></section>
+
+        <section data-background="images/alright.png" data-background-size="30%" data-background-position="right 20%">
+          <p class="fragment" style="color: #EEE8D5"><code class="javascript">React.createClass({...})</code></p>
+        </section>
+
+        <!-- #1 Rendering function -->
+        <section data-background="images/number_1.png" data-background-size="50%" data-background-position="right 15%">
+
+          <section>
+            <pre class="fragment"><code class="javascript" data-trim>
+render: function() {
+  // Return a Javascript representation of a DOM element.
+  return React.DOM.tagName(propsObj, renderableOrRenderables);
+}
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+render: function() {
+  // For example, a button with a click handler.
+  return React.DOM.button({ onClick: this.handleQuitClick }, 'Quit');
+}
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+render: function() {
+  // You may also return a React component, instead of bare DOM.
+  return SomeOtherReactComponent(...);
+}
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+render: function() {
+  // Create an &lt;li&gt; for every city in this component's state
+  var listItems = this.state.cities.map(function(cityName) {
+    return React.DOM.li(null, cityName);
+  });
+
+  // Return the cities wrapped in a &lt;ul&gt;
+  return React.DOM.ul({ className: 'cities' }, listItems);
+}
+            </code></pre>
+          </section>
+
+        </section>
+
+        <!-- #2 Lifecycle callbacks -->
+        <section data-background="images/number_2.png" data-background-size="50%" data-background-position="right 15%">
+
+          <section>
+            <pre class="fragment"><code class="javascript" data-trim>
+// Before rendering
+componentWillMount: function() { ... }
+
+// After rendering
+componentDidMount: function() { ... }
+
+// Just before removal
+componentWillUnmount: function() { ... }
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+// Before props mutate. Not called on first render.
+componentWillReceiveProps: function(/* object */ nextProps) { ... }
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+// Before rendering, whenever props or state mutate.
+// Not called on first render.
+componentWillUpdate: function(/* object */ nextProps,
+                              /* object */ nextState) { ... }
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+// After rendering.
+// Not called on first render.
+componentDidUpdate: function(/* object */ prevProps,
+                             /* object */ prevState) { ... }
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+// Think you're smarter than React? YOU be the decider.
+// Return true or false from here to permit or prevent re-rendering.
+shouldComponentUpdate: function(/* object */ nextProps,
+                                /* object */ nextState) { ... }
+            </code></pre>
+          </section>
+        </section>
+
+        <!-- #3 Other stuff -->
+        <section data-background="images/number_3.png" data-background-size="40%" data-background-position="right 15%">
+          <section>
+            <pre class="fragment"><code class="javascript" data-trim>
+// Defaults to merge with those given when the component is constructed.
+getDefaultProps: function() {
+  return { turnLimit: 30 };
+}
+
+// Calculate and return what the initial state should be.
+getInitialState: function() {
+  return { turnsRemaining: this.props.turnLimit };
+}
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+propTypes: {
+  // Enforce some types
+  name:      React.PropTypes.string.required, // Required string
+  turnLimit: React.PropTypes.number // Optional number
+}
+            </code></pre>
+          </section>
+
+          <section>
+            <pre><code class="javascript" data-trim>
+// Lifecycle methods to mix in.
+// Methods chain with the ones declared on the
+// class itself, rather than overriding them.
+mixins: [ ObjectOfLifecycleMethods, AnotherObjectOfLifecycleMethods ]
+            </code></pre>
+          </section>
+        </section>
+
+        <section>
+          <h2>Render it!</h2>
+
+          <pre class="fragment"><code class="javascript" data-trim>
+// Create an instance of your component class
+var component = MyReactComponent(...);
+
+// Render it into an existing DOM node
+React.renderComponent(component, document.body);
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>A complete React component</h2>
+          <pre class="fragment"><code class="javascript" data-trim>
+var CityList = React.createClass({
+  propTypes: {
+    country: React.PropTypes.string.required
+  },
+  getInitialState: function() {
+    return {
+      cities: COUNTRY_CITIES[this.props.country]
+    };
+  },
+  render: function() {
+    var listItems = this.state.cities.map(function(cityName) {
+      return React.DOM.li(null, cityName);
+    });
+    return React.DOM.ul({ className: 'cities' }, listItems);
+  }
+});
+CityList({ country: 'Canada' });</code></pre>
+        </section>
+
+        <section>
+          <h2>A complete React component</h2>
+          <pre><code class="coffeescript" data-trim>
+CityList = React.createClass
+
+  propTypes:
+    country: React.PropTypes.string.required
+
+  getInitialState: ->
+    cities: COUNTRY_CITIES[@props.country]
+
+  render: ->
+    React.DOM.ul className: 'cities',
+      React.DOM.li(null, cityName) for cityName in @state.cities
+
+CityList(country: 'Canada')
+</code></pre>
+        </section>
+        <section data-background="images/set_state_1.png" data-background-size="80%" data-background-position="10% 140px"></section>
+        <section data-background="images/set_state_2.png" data-background-size="90%" data-background-position="10% 100px"></section>
+
+        <section>
+          <h2>A contrived demo</h2>
+        </section>
+
+        <section>
+          <img src="images/waveform.png" width="320" height="300">
+          <img style="position: absolute; left: 320px" class="fragment" src="images/grid.png" width="320" height="300">
+        </section>
+
+        <section>
+					<pre><code data-trim>
+var gridPoints = [
+  { brightness: 0.0 },
+  { brightness: 0.1 },
+  { brightness: 0.0 },
+  { brightness: 0.9 },
+  { brightness: 0.0 },
+  { brightness: 0.0 },
+  …
+];
+					</code></pre>
+        </section>
+
+        <section>
+          <img src="images/reconstruction.gif" width="320" height="300">
+        </section>
+
+        <section>
+          <h2>Render time budget</h2>
+          <p style="font-size: 2em">1000ms / 60fps = <strong>~16ms/f</strong></p>
+        </section>
+
+        <section>
+          <h1>Are you ready?</h1>
+        </section>
+
+        <section>
+          <h2>Native version <small>&times; 1024 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/native.html?boring-32"></iframe>
+        </section>
+
+        <section>
+          <h2>React version <small>&times; 1024 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/react.html?boring-32"></iframe>
+        </section>
+
+        <section>
+          <p>Native version <small>&times; 1024 elements</small></p>
+          <img src="images/native_frame_32_timeline.png"></img>
+          <p>React version <small>&times; 1024 elements</small></p>
+          <img src="images/react_frame_32_timeline.png"></img>
+        </section>
+
+        <section>
+          <h2>Native version <small>&times; 4096 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/native.html?boring-64"></iframe>
+        </section>
+
+        <section>
+          <h2>React version <small>&times; 4096 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/react.html?boring-64"></iframe>
+        </section>
+
+        <section>
+          <p>Native version <small>&times; 4096 elements</small></p>
+          <img src="images/native_frame_64_timeline.png"></img>
+          <p>React version <small>&times; 4096 elements</small></p>
+          <img src="images/react_frame_64_timeline.png"></img>
+        </section>
+
+        <section>
+          <h2>Native version <small>&times; 16384 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/native.html?boring-128"></iframe>
+        </section>
+
+        <section>
+          <h2>React version <small>&times; 16384 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/react.html?boring-128"></iframe>
+        </section>
+
+        <section style="margin-top: -4%">
+          <p>Native version <small>&times; 16384 elements</small></p>
+          <img src="images/native_frame_128_timeline.png"></img>
+          <p>React version <small>&times; 16384 elements</small></p>
+          <img src="images/react_frame_128_timeline.png"></img>
+        </section>
+
+        <section>
+          <h2>Optimizing React components</h2>
+          <pre><code class="javascript" data-trim>
+shouldComponentUpdate: function(nextProps) {
+  // Brightness didn't change? Prevent re-rendering by returning false.
+  return this.props.brightness !== nextProps.brightness;
+}
+          </code></pre>
+
+          <p>
+            <small>Thanks to <a href="https://github.com/petehunt">Pete Hunt</a> for the suggestion.</small>
+          </p>
+        </section>
+
+        <section>
+          <h2>Ready to have some fun?</h2>
+        </section>
+
+        <section>
+          <h2>Native version <small>&times; 4096 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/native.html?fun-64"></iframe>
+        </section>
+
+        <section>
+          <h2>Optimized React version <small>&times; 4096 elements</small></h2>
+          <iframe height="512" width="512" data-src="../demo/react_optimized.html?fun-64"></iframe>
+        </section>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'fade', // default/cube/page/concave/zoom/linear/fade/none
+        transitionSpeed: 'fast',
+        backgroundTransition: 'linear',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+    <script type="text/javascript" charset="utf-8">
+    Reveal.addEventListener( 'slidechanged', function( event ) {
+
+      // Kill the outgoing iframes
+      if(event.previousSlide) {
+        var outgoingIframes = event.previousSlide.getElementsByTagName('iframe');
+        for(var i=outgoingIframes.length-1; i >= 0; i--) {
+          outgoingIframes[i].setAttribute('src', 'about:blank');
+        }
+      }
+
+      // Load the current iframe src
+      if(event.currentSlide) {
+        var incomingIframes = event.currentSlide.getElementsByTagName('iframe');
+        for(var i=incomingIframes.length-1; i >= 0; i--) {
+          incomingIframes[i].setAttribute('src', incomingIframes[i].getAttribute('data-src'));
+        }
+      }
+
+    });
+    </script>
+	</body>
+</html>
